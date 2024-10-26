@@ -163,4 +163,6 @@ int main(){
 	SomaXp (player, xp);
 	cout << player.xp << endl;
 	cout << player.nivel << endl;
+
+	cout << "escrevi qualquer merda" ;
 }
