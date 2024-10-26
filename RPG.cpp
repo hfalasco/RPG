@@ -7,7 +7,7 @@ using namespace std;
 
 struct Player{
 	string nome, classe, raca;
-	int forca, inteligencia, idade, destreza, carisma, xp;
+	int forca, inteligencia, idade, destreza, carisma, xp, nivel;
 	float vida;
 };
 
@@ -15,6 +15,34 @@ struct Item{
 	string nome;
 	int atributo;
 };
+
+Player SomaXp(Player &player, int xp){
+	int soma = player.xp + xp;
+	player.xp += xp;
+	
+	if (soma >= 10){
+		soma = 10;
+	}
+	if (soma % 10 == 0){
+		player.nivel += 1;
+		return player;
+	}
+	else{
+		return player;
+	}
+}
+
+Player SomaItem(Player &player, Item item[50]){ // terminar
+	if (item[0].nome == "Pocao de Cura Pequena"){
+		player.vida += item[0].atributo;
+	}
+	else if (item[1].nome == "Pocao de Cura Media"){
+		player.vida += item[1].atributo;
+	}
+	else if (item[2].nome == "Pocao de Cura Grande"){
+
+	}
+}
 
 int main(){
 	Player player;
@@ -33,13 +61,14 @@ int main(){
 	item[7] = {"Escudo", 9};
 	item[8] = {"Escudo Revestido", 18};
 	//CAPAS
-	item[6] = {"Capa Degastada", 3};
-	item[7] = {"Capa", 9};
-	item[8] = {"Capa Revestida", 18};
+	item[9] = {"Capa Degastada", 3};
+	item[10] = {"Capa", 9};
+	item[11] = {"Capa Revestida", 18};
 
 
 	srand(time(0));
 	player.xp = 0;
+	player.nivel = 1;
 	
 	cout << "Digite o nome do seu jogador: ";
 	cin.ignore();
@@ -125,4 +154,13 @@ int main(){
 	cout << "Inteligencia: " << player.inteligencia << endl;
 	cout << "Carisma: " << player.carisma << endl;
 	cout << "Destreza: " << player.destreza << endl;
+
+	int xp = 2;
+	SomaXp (player, xp);
+	cout << player.xp << endl;
+	cout << player.nivel << endl;	
+	xp = 7;
+	SomaXp (player, xp);
+	cout << player.xp << endl;
+	cout << player.nivel << endl;
 }
