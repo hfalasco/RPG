@@ -16,88 +16,89 @@ struct Item{
 	int atributo, codigo;
 };
 
-struct Mob
-{
+struct Mob {
 	string nome;
 	int forca;
 	float vida;
 };
 
-Player SomaXp(Player &player, int xp){
+Player SomaXp(Player &player, int xp) {
 	int soma = player.xp + xp;
 	player.xp += xp;
 	
-	if (soma >= 10){
+	if (soma >= 10) {
 		soma = 10;
 	}
-	if (soma % 10 == 0){
+	if (soma % 10 == 0) {
 		player.nivel += 1;
-		return player;
 	}
-	else{
-		return player;
-	}
+	return player;
 }
 
-bool Luta (Player player, Mob mob){
+bool Luta(Player player, Mob mob, int inventario[]) {
 	bool LutaAcabou = false;
 	int escolha, bate;
-	while (LutaAcabou == false)
-	{
+	while (!LutaAcabou) {
 		cout << "\n1- Atacar\n2- Usar item\n";
 		cin >> escolha;
-		switch (escolha)
-		{
+		switch (escolha) {
 		case 1:
 			cout << "1- " << player.item << endl;
 			cout << "2- Soco" << endl;
 			cin >> bate;
-			if (bate == 1){
+			if (bate == 1) {
 				mob.vida -= player.forca;
-			}
-			else{
+			} else {
 				mob.vida -= 2;
+			}
+			if (mob.vida <= 0) {
+				LutaAcabou = true;
 			}
 			break;
 		case 2:
-			for (int i=0 ; i <= player.qntI ; i++){
-				cout << player[i].item;
+			for (int i = 0; i < player.qntI; i++) {
+				cout << inventario[i];
 			}
+			break;
 		default:
 			break;
 		}
+		if (player.vida <= 0 || mob.vida <= 0) {
+			LutaAcabou = true;
+		}
 	}
-	
+	return (player.vida > 0); 
 }
 
 Player SomaItem(Player &player, Item item) { 
     if (item.nome == "Pocao de Cura Pequena" || item.nome == "Pocao de Cura Media" || item.nome == "Pocao de Cura Grande") {
         player.vida += item.atributo;
-    } 
-	else if (item.nome == "Espada Sem fio" || item.nome == "Espada" || item.nome == "Espada BOA") {
+    } else if (item.nome == "Espada Sem fio" || item.nome == "Espada" || item.nome == "Espada BOA") {
         player.forca += item.atributo;
-    } 
-	else if (item.nome == "Escudo Desgastado" || item.nome == "Escudo" || item.nome == "Escudo Revestido") {
+    } else if (item.nome == "Escudo Desgastado" || item.nome == "Escudo" || item.nome == "Escudo Revestido") {
         player.vida += item.atributo;
-    } 
-	else if (item.nome == "Capa Desgastada" || item.nome == "Capa" || item.nome == "Capa Revestida") {
+    } else if (item.nome == "Capa Desgastada" || item.nome == "Capa" || item.nome == "Capa Revestida") {
         player.vida += item.atributo;
     }
     return player;
 }
 
-int main(){
+int main() {
 	Player player;
+	int H = 4;
+	int inventario[H] = {0};
+	player.qntI = 0; // Inicializa player.qntI
+
 	int classe, raca;
-	Item item[50]; // 50 É O NUMERO DE ITENS QUE PODEM SER CRIADOS! MAS DA PRA ALTERAR
+	Item item[50];
 	//POÇOES
-	item[0] = {"Pocao de Cura Pequena", 3, 0}; // EXEMPLO! primeiro setor é o nome e o segundo é a quantidade do atributo.
+	item[0] = {"Pocao de Cura Pequena", 3, 0}; 
 	item[1] = {"Pocao de Cura Media", 9, 1};
 	item[2] = {"Pocao de Cura Grande", 18, 2};
 	// ESPADAS
 	item[3] = {"Espada Sem fio", 3, 3};
 	item[4] = {"Espada", 9, 4};
-	item[5] = {"Espada BOA", 18, 5}; // Sem criatividade nao sei que nome por
+	item[5] = {"Espada BOA", 18, 5};
 	//ESCUDOS
 	item[6] = {"Escudo Desgastado", 3, 6};
 	item[7] = {"Escudo", 9, 7};
@@ -107,89 +108,79 @@ int main(){
 	item[10] = {"Capa", 9, 10};
 	item[11] = {"Capa Revestida", 18, 11};
 
-
 	srand(time(0));
 	player.xp = 0;
 	player.nivel = 1;
-	
+
 	cout << "Digite o nome do seu jogador: ";
 	cin.ignore();
 	getline(cin, player.nome);
 	cout << "Insira sua idade: ";
 	cin >> player.idade;
-	system ("cls");
+	system("cls");
+
 	cout << "Selecione sua classe:\n1- Mago\n2- Guerreiro\n3- Arqueiro\n\n";
 	cin >> classe;
-	system ("cls");
-	
-	switch (classe){		
-		case 1 :
+	system("cls");
+
+	switch (classe) {		
+		case 1:
 			player.classe = "Mago";
 			player.vida = 10;
-			player.forca = (rand() % 11) + 1; // TODOS ATRIBUTOS VAO ATE O NIVEL 10!
+			player.forca = (rand() % 11) + 1;
 			player.inteligencia = (rand() % 11) + 1;
 			player.carisma = (rand() % 11) + 1;
 			player.destreza = (rand() % 11) + 1;
 		break;		
-		case 2 :
+		case 2:
 			player.classe = "Guerreiro";
 			player.vida = 10;
-			player.forca = (rand() % 11) + 1; // TODOS ATRIBUTOS VAO ATE O NIVEL 10!
+			player.forca = (rand() % 11) + 1;
 			player.inteligencia = (rand() % 11) + 1;
 			player.carisma = (rand() % 11) + 1;
 			player.destreza = (rand() % 11) + 1;
 		break;		
-		case 3 :
+		case 3:
 			player.classe = "Arqueiro";
 			player.vida = 10;
-			player.forca = (rand() % 11) + 1; // TODOS ATRIBUTOS VAO ATE O NIVEL 10!
+			player.forca = (rand() % 11) + 1;
 			player.inteligencia = (rand() % 11) + 1;
 			player.carisma = (rand() % 11) + 1;
 			player.destreza = (rand() % 11) + 1;
+		break;
+	}
+
+	cout << "A classe selecionada foi: " << player.classe << endl;
+	cout << "\n\nSelecione sua raca: \n1- Elfo  \n2- Humano \n3- Orc\n\n";
+	cin >> raca;
+	system("cls");
+
+	switch (raca) {
+		case 1:
+			player.raca = "Elfo";
+			player.vida += 2;
+			player.forca += 1;
+			player.inteligencia += 3;
+			player.carisma += 1;
+			player.destreza += 2;
+		break;
+		case 2:
+			player.raca = "Humano";
+			player.vida += 1;
+			player.forca += 2;
+			player.inteligencia += 1;
+			player.carisma += 2;
+			player.destreza += 1;
+		break;
+		case 3:
+			player.raca = "Orc";
+			player.vida += 5;
+			player.forca += 4;
+			player.inteligencia -= 2;
+			player.destreza += 5;
 		break;		
 	}
 
-	HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
-	cout << "A classe selecionada foi: ";
-	SetConsoleTextAttribute(h, 13); // ESSE COMANDO MEXE NA COR DA LINHA DEBAIXO!
-	cout << player.classe;
-	SetConsoleTextAttribute(h, 7); // VALOR 7 PQ VOLTA O RESTO PARA O PADRÃO! nao mexe se não entendeu.
-
-
-	cout << "\n\nSelecione sua raca: \n1- Elfo  \n2- Humano \n3- Orc\n\n"; // só adicionar o nome das racas e se precisar colocar mais não tem problema
-	cin >> raca;	
-	system ("cls");
-
-	switch (raca) // esse switch está com erro por conta que não foi colocado os valores!
-	{
-	case 1 : 
-		player.raca = "Elfo" ;
-		player.vida += 2 ;       // ESSE += SOMA NOS VALORES DOS ATRIBUTOS DIRETAMENTE ATUALIZANDO ELE!
-		player.forca += 1 ;      // ESSE += SOMA NOS VALORES DOS ATRIBUTOS DIRETAMENTE ATUALIZANDO ELE!
-		player.inteligencia += 3 ;   // ESSE += SOMA NOS VALORES DOS ATRIBUTOS DIRETAMENTE ATUALIZANDO ELE!
-		player.carisma += 1 ;    // ESSE += SOMA NOS VALORES DOS ATRIBUTOS DIRETAMENTE ATUALIZANDO ELE!
-		player.destreza += 2 ;   // ESSE += SOMA NOS VALORES DOS ATRIBUTOS DIRETAMENTE ATUALIZANDO ELE!
-		break;
-	case 2 :
-		player.raca = "Humano" ;   
-		player.vida += 1 ;       // ESSE += SOMA NOS VALORES DOS ATRIBUTOS DIRETAMENTE ATUALIZANDO ELE!
-		player.forca += 2 ;      // ESSE += SOMA NOS VALORES DOS ATRIBUTOS DIRETAMENTE ATUALIZANDO ELE!
-		player.inteligencia += 1 ;   // ESSE += SOMA NOS VALORES DOS ATRIBUTOS DIRETAMENTE ATUALIZANDO ELE!
-		player.carisma += 2  ;   // ESSE += SOMA NOS VALORES DOS ATRIBUTOS DIRETAMENTE ATUALIZANDO ELE!
-		player.destreza += 1 ;   // ESSE += SOMA NOS VALORES DOS ATRIBUTOS DIRETAMENTE ATUALIZANDO ELE!
-		break;
-	case 3 :
-		player.raca = "Orc" ;   
-		player.vida += 5	;    // ESSE += SOMA NOS VALORES DOS ATRIBUTOS DIRETAMENTE ATUALIZANDO ELE!
-		player.forca += 4 	;    // ESSE += SOMA NOS VALORES DOS ATRIBUTOS DIRETAMENTE ATUALIZANDO ELE!
-		player.inteligencia -= 2 ;   // ESSE += SOMA NOS VALORES DOS ATRIBUTOS DIRETAMENTE ATUALIZANDO ELE!
-		player.carisma += 0  ;   // ESSE += SOMA NOS VALORES DOS ATRIBUTOS DIRETAMENTE ATUALIZANDO ELE!
-		player.destreza += 5 ;   // ESSE += SOMA NOS VALORES DOS ATRIBUTOS DIRETAMENTE ATUALIZANDO ELE!
-		break;				
-	
-	default:
-		break;
-	}	
 	cout << "Seus atributos sorteados foram:" << endl;
 	cout << "Vida: " << player.vida << endl;
 	cout << "Forca: " << player.forca << endl;
@@ -197,21 +188,22 @@ int main(){
 	cout << "Carisma: " << player.carisma << endl;
 	cout << "Destreza: " << player.destreza << endl;
 
-	int qntItem = rand() % 4; // aqui ele sorteia quantos itens vão ser dropados!
-	player.qntI +=qntItem;
+	int qntItem = (rand() % 4) + 1;
+	player.qntI = qntItem;
 	cout << "\n\nOs itens dropados foram: ";
-	for (int i=0 ; i < qntItem ; i++){ // aqui é o loop com o tanto de itens que foram sorteados
+	for (int i = 0; i < qntItem; i++) {
 		int ItemDropado = rand() % 12;
-		while (ItemDropado >=3 && ItemDropado <=5 && player.classe == "Mago") // aqui a condição se ele for um mago ele não pode dropar uma espada (fazer para outras classes tb)
-		{
+		while (ItemDropado >= 3 && ItemDropado <= 5 && player.classe == "Mago") {
 			ItemDropado = rand() % 12;
 		}
-		if (i == qntItem - 1){ // aqui é só pra ser o ultimo item escrito ter um ponto final
-		cout << item[ItemDropado].nome << ".";
+		while ((ItemDropado >= 3 && ItemDropado <= 5) || (ItemDropado >= 6 && ItemDropado <= 8 && player.classe == "Arqueiro")) {
+			ItemDropado = rand() % 12;
 		}
-		else{
+		if (i == qntItem - 1) {
+			cout << item[ItemDropado].nome << ".";
+		} else {
 			cout << item[ItemDropado].nome << ", ";
 		}
+		inventario[i] = ItemDropado;
 	}
-	player.item = item[0].nome;
 }
