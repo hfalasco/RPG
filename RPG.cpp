@@ -190,5 +190,4 @@ int main(){
 	SomaXp (player, xp);
 	cout << player.xp << endl;
 	cout << player.nivel << endl;
-	cout << "meu pinto é pequeno";
 }
