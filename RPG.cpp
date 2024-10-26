@@ -20,7 +20,23 @@ int main(){
 	Player player;
 	int classe, raca;
 	Item item[50]; // 50 É O NUMERO DE ITENS QUE PODEM SER CRIADOS! MAS DA PRA ALTERAR
-	item[0] = {"Pocao Cura", 10}; // EXEMPLO! primeiro setor é o nome e o segundo é a quantidade do atributo.
+	//POÇOES
+	item[0] = {"Pocao de Cura Pequena", 3}; // EXEMPLO! primeiro setor é o nome e o segundo é a quantidade do atributo.
+	item[1] = {"Pocao de Cura Media", 9};
+	item[2] = {"Pocao de Cura Grande", 18};
+	// ESPADAS
+	item[3] = {"Espada Sem fio", 3};
+	item[4] = {"Espada", 9};
+	item[5] = {"Espada BOA", 18}; // Sem criatividade nao sei que nome por
+	//ESCUDOS
+	item[6] = {"Escudo Degastado", 3};
+	item[7] = {"Escudo", 9};
+	item[8] = {"Escudo Revestido", 18};
+	//CAPAS
+	item[6] = {"Capa Degastada", 3};
+	item[7] = {"Capa", 9};
+	item[8] = {"Capa Revestida", 18};
+
 
 	srand(time(0));
 	player.xp = 0;
@@ -29,8 +45,9 @@ int main(){
 	cin.ignore();
 	getline(cin, player.nome);
 	cout << "Insira sua idade: ";
-	cin >> player.idade;	
-	cout << "\nSelecione sua classe:\n1- Mago\n2- Guerreiro\n3- Arqueiro\n\n";
+	cin >> player.idade;
+	system ("cls");
+	cout << "Selecione sua classe:\n1- Mago\n2- Guerreiro\n3- Arqueiro\n\n";
 	cin >> classe;
 	system ("cls");
 	
@@ -69,7 +86,8 @@ int main(){
 
 
 	cout << "\n\nSelecione sua raca: \n1- Elfo  \n2- Humano \n3- Orc\n\n"; // só adicionar o nome das racas e se precisar colocar mais não tem problema
-	cin >> raca;
+	cin >> raca;	
+	system ("cls");
 
 	switch (raca) // esse switch está com erro por conta que não foi colocado os valores!
 	{
@@ -101,7 +119,7 @@ int main(){
 	default:
 		break;
 	}	
-	cout << "\nSeus atributos sorteados foram:" << endl;
+	cout << "Seus atributos sorteados foram:" << endl;
 	cout << "Vida: " << player.vida << endl;
 	cout << "Forca: " << player.forca << endl;
 	cout << "Inteligencia: " << player.inteligencia << endl;
