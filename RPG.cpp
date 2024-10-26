@@ -11,9 +11,17 @@ struct Player{
 	float vida;
 };
 
+struct Item{
+	string nome;
+	int atributo;
+};
+
 int main(){
 	Player player;
 	int classe, raca;
+	Item item[50]; // 50 É O NUMERO DE ITENS QUE PODEM SER CRIADOS! MAS DA PRA ALTERAR
+	item[0] = {"Pocao Cura", 10}; // EXEMPLO! primeiro setor é o nome e o segundo é a quantidade do atributo.
+
 	srand(time(0));
 	player.xp = 0;
 	
@@ -21,8 +29,7 @@ int main(){
 	cin.ignore();
 	getline(cin, player.nome);
 	cout << "Insira sua idade: ";
-	cin >> player.idade;
-	
+	cin >> player.idade;	
 	cout << "\nSelecione sua classe:\n1- Mago\n2- Guerreiro\n3- Arqueiro\n\n";
 	cin >> classe;
 	system ("cls");
@@ -61,7 +68,7 @@ int main(){
 	SetConsoleTextAttribute(h, 7); // VALOR 7 PQ VOLTA O RESTO PARA O PADRÃO! nao mexe se não entendeu.
 
 
-	cout << "\n\nSelecione sua raca: \n1- Elfo  \n2- Humano \n3- Orc\n\n "; // só adicionar o nome das racas e se precisar colocar mais não tem problema
+	cout << "\n\nSelecione sua raca: \n1- Elfo  \n2- Humano \n3- Orc\n\n"; // só adicionar o nome das racas e se precisar colocar mais não tem problema
 	cin >> raca;
 
 	switch (raca) // esse switch está com erro por conta que não foi colocado os valores!
@@ -93,8 +100,7 @@ int main(){
 	
 	default:
 		break;
-	}
-	
+	}	
 	cout << "\nSeus atributos sorteados foram:" << endl;
 	cout << "Vida: " << player.vida << endl;
 	cout << "Forca: " << player.forca << endl;
