@@ -13,7 +13,7 @@ struct Player{
 
 struct Item{
 	string nome;
-	int atributo;
+	int atributo, codigo;
 };
 
 Player SomaXp(Player &player, int xp){
@@ -35,39 +35,51 @@ Player SomaXp(Player &player, int xp){
 Player SomaItem(Player &player, Item item[50]){ // terminar
 	if (item[0].nome == "Pocao de Cura Pequena"){
 		player.vida += item[0].atributo;
+		return player;
 	}
 	else if (item[1].nome == "Pocao de Cura Media"){
 		player.vida += item[1].atributo;
+		return player;
 	}
 	else if (item[2].nome == "Pocao de Cura Grande"){
 		player.vida += item[2].atributo;
+		return player;
 	}
 	else if (item[3].nome == "Espada Sem fio"){
 		player.forca += item[3].atributo;
+		return player;
 	}
 	else if (item[4].nome == "Espada"){
 		player.forca += item[4].atributo;
+		return player;
 	}
 	else if (item[5].nome == "Espada BOA"){
 		player.forca += item[5].atributo;
+		return player;
 	}
 	else if (item[6].nome == "Escudo Desgastado"){
 		player.vida += item[6].atributo;
+		return player;
 	}
 	else if (item[7].nome == "Escudo"){
 		player.vida += item[7].atributo;
+		return player;
 	}
 	else if (item[8].nome == "Escudo Revestido"){
 		player.vida += item[8].atributo;
+		return player;
 	}
 	else if (item[9].nome == "Capa Desgastada"){
 		player.vida += item[9].atributo;
+		return player;
 	}
 	else if (item[10].nome == "Capa"){
 		player.vida += item[10].atributo;
+		return player;
 	}
 	else if (item[11].nome == "Capa Revestida"){
 		player.vida += item[11].atributo;
+		return player;
 	}
 }
 
@@ -76,21 +88,21 @@ int main(){
 	int classe, raca;
 	Item item[50]; // 50 É O NUMERO DE ITENS QUE PODEM SER CRIADOS! MAS DA PRA ALTERAR
 	//POÇOES
-	item[0] = {"Pocao de Cura Pequena", 3}; // EXEMPLO! primeiro setor é o nome e o segundo é a quantidade do atributo.
-	item[1] = {"Pocao de Cura Media", 9};
-	item[2] = {"Pocao de Cura Grande", 18};
+	item[0] = {"Pocao de Cura Pequena", 3, 0}; // EXEMPLO! primeiro setor é o nome e o segundo é a quantidade do atributo.
+	item[1] = {"Pocao de Cura Media", 9, 1};
+	item[2] = {"Pocao de Cura Grande", 18, 2};
 	// ESPADAS
-	item[3] = {"Espada Sem fio", 3};
-	item[4] = {"Espada", 9};
-	item[5] = {"Espada BOA", 18}; // Sem criatividade nao sei que nome por
+	item[3] = {"Espada Sem fio", 3, 3};
+	item[4] = {"Espada", 9, 4};
+	item[5] = {"Espada BOA", 18, 5}; // Sem criatividade nao sei que nome por
 	//ESCUDOS
-	item[6] = {"Escudo Desgastado", 3};
-	item[7] = {"Escudo", 9};
-	item[8] = {"Escudo Revestido", 18};
+	item[6] = {"Escudo Desgastado", 3, 6};
+	item[7] = {"Escudo", 9, 7};
+	item[8] = {"Escudo Revestido", 18, 8};
 	//CAPAS
-	item[9] = {"Capa Desgastada", 3};
-	item[10] = {"Capa", 9};
-	item[11] = {"Capa Revestida", 18};
+	item[9] = {"Capa Desgastada", 3, 9};
+	item[10] = {"Capa", 9, 10};
+	item[11] = {"Capa Revestida", 18, 11};
 
 
 	srand(time(0));
@@ -182,12 +194,19 @@ int main(){
 	cout << "Carisma: " << player.carisma << endl;
 	cout << "Destreza: " << player.destreza << endl;
 
-	int xp = 2;
-	SomaXp (player, xp);
-	cout << player.xp << endl;
-	cout << player.nivel << endl;	
-	xp = 7;
-	SomaXp (player, xp);
-	cout << player.xp << endl;
-	cout << player.nivel << endl;
+	int qntItem = rand() % 4; // aqui ele sorteia quantos itens vão ser dropados!
+	cout << "\n\nOs itens dropados foram: ";
+	for (int i=0 ; i < qntItem ; i++){ // aqui é o loop com o tanto de itens que foram sorteados
+		int ItemDropado = rand() % 12;
+		while (ItemDropado >=3 && ItemDropado <=5 && player.classe == "Mago") // aqui a condição se ele for um mago ele não pode dropar uma espada (fazer para outras classes tb)
+		{
+			ItemDropado = rand() % 12;
+		}
+		if (i == qntItem - 1){ // aqui é só pra ser o ultimo item escrito ter um ponto final
+		cout << item[ItemDropado].nome << ".";
+		}
+		else{
+			cout << item[ItemDropado].nome << ", ";
+		}
+	}
 }
