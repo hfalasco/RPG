@@ -40,7 +40,28 @@ Player SomaItem(Player &player, Item item[50]){ // terminar
 		player.vida += item[1].atributo;
 	}
 	else if (item[2].nome == "Pocao de Cura Grande"){
-
+		player.vida += item[2].atributo;
+	}
+	else if (item[3].nome == "Espada Sem fio"){
+		player.forca += item[3].atributo;
+	}
+	else if (item[4].nome == "Espada"){
+		player.forca += item[4].atributo;
+	}
+	else if (item[5].nome == "Espada BOA"){
+		player.forca += item[5].atributo;
+	}
+	else if (item[6].nome == "Escudo Desgastado"){
+		player.vida += item[6].atributo;
+	}
+	else if (item[7].nome == "Escudo"){
+		player.vida += item[7].atributo;
+	}
+	else if (item[8].nome == "Escudo Revestido"){
+		player.vida += item[8].atributo;
+	}
+	else if (item[9].nome == "Capa Desgastada"){
+		player.vida += item[9].atributo;
 	}
 }
 
@@ -57,11 +78,11 @@ int main(){
 	item[4] = {"Espada", 9};
 	item[5] = {"Espada BOA", 18}; // Sem criatividade nao sei que nome por
 	//ESCUDOS
-	item[6] = {"Escudo Degastado", 3};
+	item[6] = {"Escudo Desgastado", 3};
 	item[7] = {"Escudo", 9};
 	item[8] = {"Escudo Revestido", 18};
 	//CAPAS
-	item[9] = {"Capa Degastada", 3};
+	item[9] = {"Capa Desgastada", 3};
 	item[10] = {"Capa", 9};
 	item[11] = {"Capa Revestida", 18};
 
@@ -163,6 +184,4 @@ int main(){
 	SomaXp (player, xp);
 	cout << player.xp << endl;
 	cout << player.nivel << endl;
-
-	cout << "escrevi qualquer merda" ;
 }
