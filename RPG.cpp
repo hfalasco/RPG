@@ -103,6 +103,14 @@ int main(){
 	item[9] = {"Capa Desgastada", 3, 9};
 	item[10] = {"Capa", 9, 10};
 	item[11] = {"Capa Revestida", 18, 11};
+	//LUVAS
+	item[12] = {"Luva de Pedreiro", 3, 12};
+	item[13] = {"Luva de Aventureiro", 9, 13};
+	item[14] = {"Luva Revestida de Aço", 18, 14};
+	//ARCO
+	item[15] = {"Luva de Pedreiro", 3, 12};
+	item[16] = {"Luva de Aventureiro", 9, 13};
+	item[17] = {"Luva Revestida de Aço", 18, 14};
 
 
 	srand(time(0));
@@ -194,11 +202,15 @@ int main(){
 	cout << "Carisma: " << player.carisma << endl;
 	cout << "Destreza: " << player.destreza << endl;
 
-	int qntItem = rand() % 4; // aqui ele sorteia quantos itens vão ser dropados!
+	int qntItem = (rand() % 4) + 1; // aqui ele sorteia quantos itens vão ser dropados!
 	cout << "\n\nOs itens dropados foram: ";
 	for (int i=0 ; i < qntItem ; i++){ // aqui é o loop com o tanto de itens que foram sorteados
 		int ItemDropado = rand() % 12;
-		while (ItemDropado >=3 && ItemDropado <=5 && player.classe == "Mago") // aqui a condição se ele for um mago ele não pode dropar uma espada (fazer para outras classes tb)
+		while (ItemDropado >=3 && ItemDropado <=5 && player.classe == "Mago")
+		{
+			ItemDropado = rand() % 12;
+		}
+		while (ItemDropado >=3 && ItemDropado <=5 || ItemDropado >=6 && ItemDropado <=8 && player.classe == "Arqueiro") 
 		{
 			ItemDropado = rand() % 12;
 		}
