@@ -6,14 +6,21 @@
 using namespace std;
 
 struct Player{
-	string nome, classe, raca;
-	int forca, inteligencia, idade, destreza, carisma, xp, nivel;
+	string nome, classe, raca, item;
+	int forca, inteligencia, idade, destreza, carisma, xp, nivel, qntI;
 	float vida;
 };
 
 struct Item{
 	string nome;
 	int atributo, codigo;
+};
+
+struct Mob
+{
+	string nome;
+	int forca;
+	float vida;
 };
 
 Player SomaXp(Player &player, int xp){
@@ -32,55 +39,51 @@ Player SomaXp(Player &player, int xp){
 	}
 }
 
-Player SomaItem(Player &player, Item item[50]){ // terminar
-	if (item[0].nome == "Pocao de Cura Pequena"){
-		player.vida += item[0].atributo;
-		return player;
+bool Luta (Player player, Mob mob){
+	bool LutaAcabou = false;
+	int escolha, bate;
+	while (LutaAcabou == false)
+	{
+		cout << "\n1- Atacar\n2- Usar item\n";
+		cin >> escolha;
+		switch (escolha)
+		{
+		case 1:
+			cout << "1- " << player.item << endl;
+			cout << "2- Soco" << endl;
+			cin >> bate;
+			if (bate == 1){
+				mob.vida -= player.forca;
+			}
+			else{
+				mob.vida -= 2;
+			}
+			break;
+		case 2:
+			for (int i=0 ; i <= player.qntI ; i++){
+				cout << player[i].item;
+			}
+		default:
+			break;
+		}
 	}
-	else if (item[1].nome == "Pocao de Cura Media"){
-		player.vida += item[1].atributo;
-		return player;
-	}
-	else if (item[2].nome == "Pocao de Cura Grande"){
-		player.vida += item[2].atributo;
-		return player;
-	}
-	else if (item[3].nome == "Espada Sem fio"){
-		player.forca += item[3].atributo;
-		return player;
-	}
-	else if (item[4].nome == "Espada"){
-		player.forca += item[4].atributo;
-		return player;
-	}
-	else if (item[5].nome == "Espada BOA"){
-		player.forca += item[5].atributo;
-		return player;
-	}
-	else if (item[6].nome == "Escudo Desgastado"){
-		player.vida += item[6].atributo;
-		return player;
-	}
-	else if (item[7].nome == "Escudo"){
-		player.vida += item[7].atributo;
-		return player;
-	}
-	else if (item[8].nome == "Escudo Revestido"){
-		player.vida += item[8].atributo;
-		return player;
-	}
-	else if (item[9].nome == "Capa Desgastada"){
-		player.vida += item[9].atributo;
-		return player;
-	}
-	else if (item[10].nome == "Capa"){
-		player.vida += item[10].atributo;
-		return player;
-	}
-	else if (item[11].nome == "Capa Revestida"){
-		player.vida += item[11].atributo;
-		return player;
-	}
+	
+}
+
+Player SomaItem(Player &player, Item item) { 
+    if (item.nome == "Pocao de Cura Pequena" || item.nome == "Pocao de Cura Media" || item.nome == "Pocao de Cura Grande") {
+        player.vida += item.atributo;
+    } 
+	else if (item.nome == "Espada Sem fio" || item.nome == "Espada" || item.nome == "Espada BOA") {
+        player.forca += item.atributo;
+    } 
+	else if (item.nome == "Escudo Desgastado" || item.nome == "Escudo" || item.nome == "Escudo Revestido") {
+        player.vida += item.atributo;
+    } 
+	else if (item.nome == "Capa Desgastada" || item.nome == "Capa" || item.nome == "Capa Revestida") {
+        player.vida += item.atributo;
+    }
+    return player;
 }
 
 int main(){
@@ -195,6 +198,7 @@ int main(){
 	cout << "Destreza: " << player.destreza << endl;
 
 	int qntItem = rand() % 4; // aqui ele sorteia quantos itens vão ser dropados!
+	player.qntI +=qntItem;
 	cout << "\n\nOs itens dropados foram: ";
 	for (int i=0 ; i < qntItem ; i++){ // aqui é o loop com o tanto de itens que foram sorteados
 		int ItemDropado = rand() % 12;
@@ -209,4 +213,5 @@ int main(){
 			cout << item[ItemDropado].nome << ", ";
 		}
 	}
+	player.item = item[0].nome;
 }
