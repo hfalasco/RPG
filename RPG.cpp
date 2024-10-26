@@ -63,6 +63,12 @@ Player SomaItem(Player &player, Item item[50]){ // terminar
 	else if (item[9].nome == "Capa Desgastada"){
 		player.vida += item[9].atributo;
 	}
+	else if (item[10].nome == "Capa"){
+		player.vida += item[10].atributo;
+	}
+	else if (item[11].nome == "Capa Revestida"){
+		player.vida += item[11].atributo;
+	}
 }
 
 int main(){
