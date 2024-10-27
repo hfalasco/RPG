@@ -104,29 +104,29 @@ float Luta(Player &player, Inventario inventario[10], Item item[50], Mob mob){
 		if (mob.vida <= 0 || player.vida <= 0){
 			LutaAcabou = true;
 			
-	int qntItem = (rand() % 4) + 1;
-	player.qntI = qntItem;
-	cout << "\n\nOs itens dropados foram: ";
-	for (int i = 0; i < qntItem; i++){
-		int ItemDropado = rand() % 12;
-		while (ItemDropado >= 3 && ItemDropado <= 5 && player.classe == "Mago") {
-			ItemDropado = rand() % 12;
+			int qntItem = (rand() % 4) + 1;
+			player.qntI = qntItem;
+			cout << "\n\nOs itens dropados foram: ";
+			for (int i = 0; i < qntItem; i++){
+				int ItemDropado = rand() % 12;
+				while (( ItemDropado >= 3 && ItemDropado <= 5) || (ItemDropado >= 6 && ItemDropado <= 8 && player.classe == "Mago")) {
+					ItemDropado = rand() % 12;
+				}
+				while ((ItemDropado >= 3 && ItemDropado <= 5) || (ItemDropado >= 6 && ItemDropado <= 8 && player.classe == "Arqueiro")) {
+					ItemDropado = rand() % 12;
+				}
+				if (i == qntItem - 1) {
+					cout << item[ItemDropado].nome << ".";
+				} else {
+					cout << item[ItemDropado].nome << ", ";
+				}
+				inventario[i].nome = item[ItemDropado].nome;
+			}
+					return player.vida;
+				}
+			}
+			
 		}
-		while ((ItemDropado >= 3 && ItemDropado <= 5) || (ItemDropado >= 6 && ItemDropado <= 8 && player.classe == "Arqueiro")) {
-			ItemDropado = rand() % 12;
-		}
-		if (i == qntItem - 1) {
-			cout << item[ItemDropado].nome << ".";
-		} else {
-			cout << item[ItemDropado].nome << ", ";
-		}
-		inventario[i].nome = item[ItemDropado].nome;
-	}
-			return player.vida;
-		}
-	}
-	
-}
 
 
 int main() {
