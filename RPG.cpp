@@ -1,13 +1,14 @@
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
+#include <chrono>
 #include <windows.h>
 
 using namespace std;
 
 struct Player{
 	string nome, classe, raca, item;
-	int forca, inteligencia, idade, destreza, carisma, xp, nivel, qntI;
+	int forca, inteligencia, idade, destreza, carisma, xp, nivel, qntI, stamina;
 	float vida;
 };
 
@@ -53,46 +54,113 @@ Player SomaItem(Player &player, Item item) {
     }
     return player;
 }
+Player CalculaStamina(Player &player, int qntS, string lugar){
+	int qntP = 0;
+	if (player.stamina < qntS) {
+                int x = qntS - player.stamina;
+                int y = 60 / x; // conta para saber quantos segundos demora para a stamina carregar!
+                cout << "Espere " << y << " segundos para carregar sua barra de stamina!";
+
+                auto start = chrono::high_resolution_clock::now();                
+				Sleep(y * 1000);
+                auto end = chrono::high_resolution_clock::now();
+
+                auto duracao = chrono::duration_cast<chrono::seconds>(end - start);
+				cout << "\nStamina CARREGADA!" << endl;
+				Sleep(1000);
+				player.stamina -= qntS;
+				
+				while (qntP < 4)
+				{
+					system("cls");
+					cout << "Caminhando ";
+					cout << " . ";
+					Sleep(1000);
+					cout << " . ";
+					Sleep(1000);
+					cout << " . ";
+					Sleep(1000);
+					qntP++;
+				}
+				cout << "\n\nVoce chegou " << lugar << "!";				
+            }
+			else{
+				player.stamina -= qntS;
+				while (qntP < 4)
+				{
+					system("cls");
+					cout << "Caminhando ";
+					cout << " . ";
+					Sleep(1000);
+					cout << " . ";
+					Sleep(1000);
+					cout << " . ";
+					Sleep(1000);
+					qntP++;
+				}
+				cout << "\n\nVoce chegou " << lugar << "!";
+			}
+	return player;
+}
 
 float Luta(Player &player, Inventario inventario[10], Item item[50], Mob mob){
 	bool LutaAcabou = false;
-	int escolha, bater, Eitem, i;
+	int escolha, bater, Eitem, i, dadoP, dadoM;
 
-	while (!LutaAcabou == true)
+	while (!LutaAcabou) // loop para verificar se a luta acabou
 	{
-		cout << "\n\n1- Atacar\n2- Usar item\n";
+		cout << "\n\n1- Atacar\n2- Usar item\n"; // player escolhe oq ele quer fazer
 		cin >> escolha;
 		switch (escolha)
 		{
 		case 1 :
-			cout << "\n1- " << player.item << endl;
-			cout << "2- Soco";
+			cout << "1- " << player.item << endl; // Aqui vai aparecer se ele quer atacar com a espada que ele tem
+			cout << "2- Soco" << endl;
 			cin >> bater;
 			if (bater == 1){
-				mob.vida -= player.forca;
+				srand(time(0));
+				dadoM = rand() % 20; // dados para ver qual a chance dele bater
+				dadoP = rand() % 20;
+				if (dadoP > dadoM){ // se o numero aqui for maior ele bate
+					mob.vida -= player.forca;
+				}
+				else{
+					player.vida -= mob.forca;
+				}
 			} 
 			else{
-				mob.vida -= 2;
+				dadoM = rand() % 20; // mesma coisa com o soco
+				dadoP = rand() % 20;
+				if (dadoP > dadoM){
+					mob.vida -= 2;
+				}
+				else{
+					player.vida -= mob.forca;
+				}
 			}
 			break;
-			case 2:
+			case 2: // aqui começa umas gambiarras (não tentem entender)
 			if(player.qntI > 0){
 				for (i = 0; i < player.qntI; i++) {
-						cout << i + 1 << "- " << inventario[i].nome << endl;
+						cout << i + 1 << "- " << inventario[i].nome << endl; // mostra os itens que ele tem no inventario
 				}
 				cin >> Eitem;
-				Eitem -= 1;
+				Eitem -= 1; // aqui ele tira 1 para poder pegar pelo codigo do item
 				for (i = 0; i < 12; i++) {
-					if (item[i].nome == inventario[Eitem].nome) {
-						SomaItem(player, item[i]); 
+					if (item[i].nome == inventario[Eitem].nome) { // aqui ele localiza qual o item que voce selecionou
+						SomaItem(player, item[i]); //funcao para usar o item
 						break;
 					}
 				}
 				player.qntI -= 1;
-				for (i = Eitem; i < player.qntI; i++) {
+				for (i = Eitem; i < player.qntI; i++) { // aqui ele atualzia o inventario
 						inventario[i] = inventario[i + 1];
 				}
-				player.vida -= mob.forca;
+				dadoM = rand() % 20; // o mob tem uma chance maior de te bater
+				dadoP = rand() % 15;
+				if (dadoM > dadoP){
+					player.vida -= mob.forca;
+				}
 			}
 			else{
 				cout << "Inventario VAZIO!";
@@ -101,38 +169,36 @@ float Luta(Player &player, Inventario inventario[10], Item item[50], Mob mob){
 		default:
 			break;
 		}
-		if (mob.vida <= 0 || player.vida <= 0){
-			LutaAcabou = true;
-			
-	int qntItem = (rand() % 4) + 1;
-	player.qntI = qntItem;
-	cout << "\n\nOs itens dropados foram: ";
-	for (int i = 0; i < qntItem; i++){
-		int ItemDropado = rand() % 12;
-		while (ItemDropado >= 3 && ItemDropado <= 5 && player.classe == "Mago") {
-			ItemDropado = rand() % 12;
+		if (mob.vida <= 0 || player.vida <= 0){ // funcao para dropar item, não tenta entender tb o importante é que funciona!
+			LutaAcabou = true;					
+			int qntItem = (rand() % 4) + 1;
+			player.qntI = qntItem;
+			cout << "\n\nOs itens dropados foram: ";
+			for (int i = 0; i < qntItem; i++){
+				int ItemDropado = rand() % 12;
+				while (ItemDropado >= 3 && ItemDropado <= 5 && player.classe == "Mago") {
+					ItemDropado = rand() % 12;
+				}
+				while ((ItemDropado >= 3 && ItemDropado <= 5) || (ItemDropado >= 6 && ItemDropado <= 8 && player.classe == "Arqueiro")) {
+					ItemDropado = rand() % 12;
+				}
+				if (i == qntItem - 1) {
+					cout << item[ItemDropado].nome << ".";
+				} else {
+					cout << item[ItemDropado].nome << ", ";
+				}
+				inventario[i].nome = item[ItemDropado].nome;
+			}
+				return player.vida; // aqui ele vai retornar apenas a vida restaurando os outros atributos pro padrão
 		}
-		while ((ItemDropado >= 3 && ItemDropado <= 5) || (ItemDropado >= 6 && ItemDropado <= 8 && player.classe == "Arqueiro")) {
-			ItemDropado = rand() % 12;
-		}
-		if (i == qntItem - 1) {
-			cout << item[ItemDropado].nome << ".";
-		} else {
-			cout << item[ItemDropado].nome << ", ";
-		}
-		inventario[i].nome = item[ItemDropado].nome;
-	}
-			return player.vida;
-		}
-	}
-	
+	}	
 }
-
 
 int main() {
 	Player player;
 	Inventario inventario[10];
 	player.qntI = 0; // Inicializa player.qntI
+	player.stamina = 1; // esse valor pode mudar!
 
 	int classe, raca;
 	Item item[50];
@@ -151,7 +217,7 @@ int main() {
 	//CAPAS
 	item[9] = {"Capa Desgastada", 3, 10};
 	item[10] = {"Capa", 9, 11};
-	item[11] = {"Capa Revestida", 18l, 12};
+	item[11] = {"Capa Revestida", 18, 12};
 
 	srand(time(0));
 	player.xp = 0;
@@ -232,4 +298,22 @@ int main() {
 	cout << "Inteligencia: " << player.inteligencia << endl;
 	cout << "Carisma: " << player.carisma << endl;
 	cout << "Destreza: " << player.destreza << endl;
+
+	int escolha, qntS;
+	string lugar;
+
+	cout << "\nDeseja ir para puta que pariu?(- 10 stamina)\n1- Sim\n2- Nao\n"; // EXEMPLO DE APLICAÇÃO!!!!!
+	cin >> escolha;
+    switch (escolha) {
+        case 1:
+			qntS = 10; // esse valor vai variar depende do quanto deseja gastar de stamina!
+			lugar = "Puta que Pariu"; // puta que pariu é um exemplo aqui voce coloca o nome do local!
+            CalculaStamina(player, qntS, lugar);
+            break;
+		case 2:
+			//aqui depende da historia para onde ele deseja seguir!
+		break;
+        default:
+        break;
+    }
 }
