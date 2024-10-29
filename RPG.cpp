@@ -23,12 +23,20 @@ struct Inventario
 	int qnt;
 };
 
-
 struct Mob {
 	string nome;
 	int forca;
 	float vida;
 };
+
+void Falas(string fala){
+       for (char L : fala){ // transformando string em char
+           cout << L; // printando letra por letra
+           Sleep(150); // delay de 150 ms para cada letra (podendo alterar)
+       }
+	   cout << "\n";
+	   system("pause");
+}
 
 Player SomaXp(Player &player, int xp) {
 	int soma = player.xp + xp;
@@ -316,4 +324,10 @@ int main() {
         default:
         break;
     }
+	string fala = "Testando"; // onde as falas vão ser registradas
+	cout << "Perosnagem: "; // Nome do personagem
+	Falas(fala); // função fala que da a impressão de digitação nas frases
+	fala = "Testando2";
+	cout << "\nPersonagem2: ";
+	Falas(fala);
 }
