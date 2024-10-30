@@ -38,21 +38,21 @@ void Falas(string fala){
 	   cout << "\n";
 	   getchar(); // pausa para o player clicar para aparecer outra fala (um pouco paia pq aparece "pressione qualuqer tecla para continuar"), passivel de retirada!
 }
-void DropItem(Player player, Item item[50], Inventario inventario[10]){
-	srand(time(0));
-	int qntI = 0, i;
-	qntI = (rand() % 4) + 1;
-	for (i=0 ; i <= qntI ; i++){
-		inventario[i].codigo = (rand() % 13) + 1;
-		while ((player.classe == "Mago" && inventario[i].codigo >= 3 && inventario[i].codigo <= 5) || (player.classe == "Arqueiro" && inventario[i].codigo >= 3 && inventario[i].codigo <= 5))
-		{
-			inventario[i].codigo = (rand() % 13) + 1;
-		}			
-	}
-	for (i=0 ; i <= qntI ; i++){
-		cout << item[inventario[i].codigo].nome << endl;
-	}
+void DropItem(Player &player, Item item[50], Inventario inventario[10]) {
+    srand(time(0));
+    cout << "Os itens dropados foram:\n";
+    int qntI = 0, i, codigoItem;
+    qntI = (rand() % 4) + 1;
+    player.qntI += qntI;
+
+    for (i = 0; i < qntI; i++) {
+        codigoItem = (rand() % 14); // para evitar valores fora do índice do array
+        inventario[i].codigo = codigoItem;
+        inventario[i].nome = item[codigoItem].nome; // associar nome do item ao inventário
+        cout << item[codigoItem].nome << endl;
+    }
 }
+
 Player SomaXp(Player &player, int xp) {
 	int soma = player.xp + xp;
 	player.xp += xp;
@@ -125,81 +125,88 @@ Player CalculaStamina(Player &player, int qntS, string lugar){
 			}
 	return player;
 }
-float Luta(Player &player, Inventario inventario[10], Item item[50], Mob mob){
+float Luta(Player player, Inventario inventario[10], Item item[50], Mob mob){
+	system ("cls");
 	bool LutaAcabou = false;
-	int escolha, bater, Eitem, i, dadoP, dadoM;
-	cout << mob.nome;
-
-	while (!LutaAcabou) // loop para verificar se a luta acabou
+	int dadoP, dadoM, escolha, escolhaI, i;
+	srand(time(0));
+	while (!LutaAcabou)
 	{
-		cout << "\n\n1- Atacar\n2- Usar item\n"; // player escolhe oq ele quer fazer
+		cout << "Vida player: " << player.vida << " || Forca player: " << player.forca << endl;
+		cout << "Vida mob: " << mob.vida << " || forca mob: " << mob.forca << "\n\n";
+		cout << "O que deseja fazer?\n1- Bater\n2- Usar item\n";
 		cin >> escolha;
 		switch (escolha)
 		{
-		case 1 :
-			cout << "1- " << player.item << endl; // Aqui vai aparecer se ele quer atacar com a espada que ele tem
-			cout << "2- Soco" << endl;
-			cin >> bater;
-			if (bater == 1){
-				srand(time(0));
-				dadoM = rand() % 20; // dados para ver qual a chance dele bater
-				dadoP = rand() % 20;
-				if (dadoP > dadoM){ // se o numero aqui for maior ele bate
-					mob.vida -= player.forca;
-				}
-				else{
-					player.vida -= mob.forca;
-				}
-			} 
+		case 1:
+			system ("cls");
+			dadoP = rand() % 20;
+			dadoM = rand() % 20;
+			cout << "Resultado dos dados: " << endl;
+			cout << "Player: " << dadoP << endl;
+			cout << mob.nome << ": " << dadoM << "\n";
+			if (dadoP > dadoM){
+				mob.vida -= player.forca;
+				cout << "\n" << player.nome << " CAUSOU " << player.forca << " de dano" << "\n\n";
+			}
 			else{
-				dadoM = rand() % 20; // mesma coisa com o soco
-				dadoP = rand() % 20;
-				cout << dadoM << endl;
-				cout << dadoP << endl;
-				if (dadoP > dadoM){
-					mob.vida -= 2;
-				}
-				else{
-					player.vida -= mob.forca;
-				}
+				player.vida -= mob.forca;
+				cout << "\n" << player.nome << " SOFREU " << mob.forca << " de dano" << "\n\n";
+			}
+			if (mob.vida <= 0){
+				cout << player.nome << " VENCEU!" << endl;
+				system ("pause");
+				DropItem (player, item, inventario);
+				return player.vida;
+				LutaAcabou = true;
+			}
+			if (player.vida <= 0){
+				cout << player.nome << " morreu... talvez em uma outra vida..." << endl;
+				system ("pause");
+				LutaAcabou = true;
+				return 0;
 			}
 			break;
-			case 2: // aqui começa umas gambiarras (não tentem entender)
-			if(player.qntI > 0){
-				for (i = 0; i < player.qntI; i++) {
-						cout << i + 1 << "- " << inventario[i].nome << endl; // mostra os itens que ele tem no inventario
-				}
-				cin >> Eitem;
-				Eitem -= 1; // aqui ele tira 1 para poder pegar pelo codigo do item
-				for (i = 0; i < 12; i++) {
-					if (item[i].nome == inventario[Eitem].nome) { // aqui ele localiza qual o item que voce selecionou
-						SomaItem(player, item[i]); //funcao para usar o item
-						break;
-					}
-				}
-				player.qntI -= 1;
-				for (i = Eitem; i < player.qntI; i++) { // aqui ele atualzia o inventario
-						inventario[i] = inventario[i + 1];
-				}
-				dadoM = rand() % 20; // o mob tem uma chance maior de te bater
-				dadoP = rand() % 15;
-				if (dadoM > dadoP){
-					player.vida -= mob.forca;
-				}
-			}
-			else{
-				cout << "Inventario VAZIO!";
-			}
+case 2:
+    if (player.qntI == 0) {
+        cout << "Inventário VAZIO!\n\n";
+    } else {
+        for (i = 0; i < player.qntI; i++) {
+            cout << i + 1 << "- " << inventario[i].nome << "\n";
+        }
+        cin >> escolhaI;
+        escolhaI--;
+        if (escolhaI >= 0 && escolhaI < player.qntI) {
+            int codigoItem = inventario[escolhaI].codigo;
+            SomaItem(player, item[codigoItem]); 
+            for (i = escolhaI; i < player.qntI - 1; i++) {
+                inventario[i] = inventario[i + 1];
+            }
+            player.qntI--;
+
+            dadoP = rand() % 10;
+            dadoM = rand() % 15;
+            if (dadoM > dadoP) {
+                player.vida -= mob.forca;
+                if (player.vida <= 0) {
+                    cout << player.nome << " morreu... talvez em uma outra vida..." << endl;
+                    system("pause");
+                    LutaAcabou = true;
+                    return 0;
+                }
+            }
+        } else {
+            cout << "Item INVALIDO!\n\n";
+        }
+    }
     break;
+
+		
 		default:
 			break;
 		}
-		if (mob.vida <= 0 || player.vida <= 0){ // funcao para dropar item, não tenta entender tb o importante é que funciona!
-			DropItem (player, item, inventario);
-			LutaAcabou = true;			
-			return player.vida; // aqui ele vai retornar apenas a vida restaurando os outros atributos pro padrão
-		}
-	}	
+	}
+	
 }
 
 int main() {
@@ -235,7 +242,6 @@ int main() {
 	player.nivel = 1;
 
 	cout << "Digite o nome do seu jogador: ";
-	cin.ignore();
 	getline(cin, player.nome);
 	cout << "Insira sua idade: ";
 	cin >> player.idade;
@@ -309,5 +315,19 @@ int main() {
 	cout << "Inteligencia: " << player.inteligencia << endl;
 	cout << "Carisma: " << player.carisma << endl;
 	cout << "Destreza: " << player.destreza << endl;
-	DropItem (player, item, inventario);
+
+	Mob mob;
+	mob.vida = 5;
+	mob.forca = 1;
+	mob.nome = "Teste";
+	DropItem(player, item, inventario);
+
+	player.vida = Luta(player, inventario, item, mob);
+
+	system ("cls");
+	cout << "Vida: " << player.vida << endl;
+	cout << "Forca: " << player.forca << endl;
+	cout << "Inteligencia: " << player.inteligencia << endl;
+	cout << "Carisma: " << player.carisma << endl;
+	cout << "Destreza: " << player.destreza << endl;
 }
