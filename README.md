@@ -29,20 +29,20 @@ Este RPG foi desenvolvido com o intuito de aprimorar as habilidades em C++ e apl
   1- Clone o repositório:
   
 git clone https://github.com/seu-usuario/rpg-project.git           // ALTERAR
-cd rpg-project
+
 
   2- Compile o projeto:
 
-  g++ src/*.cpp -o rpg-game                  // ALTERAR
+g++ src/*.cpp -o rpg-game                  // ALTERAR
 
   3- EXECUTE EM SUA IDE
 
   AUTORES
 
-  HENRIQUE FALASCO DE SOUZA
-  JOAO FILIPE BETIN
-  RAFAEL GUERINO
-  MIGUEL SANT'ANA
+HENRIQUE FALASCO DE SOUZA
+JOAO FILIPE BETIN
+RAFAEL GUERINO
+MIGUEL SANT'ANA
 
 
   // SUJEITO A ALTERAÇOES
