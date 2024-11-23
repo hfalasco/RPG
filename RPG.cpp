@@ -20,8 +20,7 @@ struct Item{
 
 struct Inventario
 {
-	string nome;
-	int codigo;
+	Item item[50];
 };
 
 struct Mob {
@@ -38,21 +37,22 @@ void Falas(string fala){
 	   cout << "\n";
 	   getchar(); // pausa para o player clicar para aparecer outra fala (um pouco paia pq aparece "pressione qualuqer tecla para continuar"), passivel de retirada!
 }
-void DropItem(Player &player, Item item[50], Inventario inventario[10]) {
+void DropItem(Player &player, Item item[50], Inventario &inventario) {
     srand(time(0));
     cout << "Os itens dropados foram:\n";
-    int qntI = 0, i, codigoItem;
-    qntI = (rand() % 4) + 1;
-    player.qntI += qntI;
 
-    for (i = 0; i < qntI; i++) {
-        codigoItem = (rand() % 14); // para evitar valores fora do índice do array
-        inventario[i].codigo = codigoItem;
-        inventario[i].nome = item[codigoItem].nome; // associar nome do item ao inventário
-        cout << item[codigoItem].nome << endl;
+    for (int i = 0; i < 2; i++) {
+        int codigoItem = rand() % 18;
+        while ((codigoItem >= 3 && codigoItem <= 5) || codigoItem >= 12) {
+            codigoItem = rand() % 18;
+        }
+        inventario.item[player.qntI] = item[codigoItem];
+        cout << inventario.item[player.qntI].nome << " // ";
+        player.qntI++;
     }
+    cout << endl;
+    system("pause");
 }
-
 Player SomaXp(Player &player, int xp) {
 	int soma = player.xp + xp;
 	player.xp += xp;
@@ -125,10 +125,10 @@ Player CalculaStamina(Player &player, int qntS, string lugar){
 			}
 	return player;
 }
-float Luta(Player player, Inventario inventario[10], Item item[50], Mob mob){
+float Luta(Player player, Inventario inventario, Item item[50], Mob mob){
 	system ("cls");
 	bool LutaAcabou = false;
-	int dadoP, dadoM, escolha, escolhaI, i;
+	int dadoP, dadoM, escolha, escolhaI, i, hit;
 	srand(time(0));
 	while (!LutaAcabou)
 	{
@@ -139,80 +139,66 @@ float Luta(Player player, Inventario inventario[10], Item item[50], Mob mob){
 		switch (escolha)
 		{
 		case 1:
+			cout << "\n1- " << inventario.item[0].nome << "\n2- Soco\n";
+			cin >> hit;
 			system ("cls");
 			dadoP = rand() % 20;
 			dadoM = rand() % 20;
 			cout << "Resultado dos dados: " << endl;
-			cout << "Player: " << dadoP << endl;
-			cout << mob.nome << ": " << dadoM << "\n";
-			if (dadoP > dadoM){
+			cout << player.nome << ": " << dadoP << endl;
+			cout << mob.nome << ": " << dadoM << "\n\n";
+			if (dadoP > dadoM && hit == 1){
+				mob.vida -= inventario.item[0].atributo;
+			}
+			else if (dadoP > dadoM && hit == 2){
 				mob.vida -= player.forca;
-				cout << "\n" << player.nome << " CAUSOU " << player.forca << " de dano" << "\n\n";
 			}
 			else{
 				player.vida -= mob.forca;
-				cout << "\n" << player.nome << " SOFREU " << mob.forca << " de dano" << "\n\n";
-			}
-			if (mob.vida <= 0){
-				cout << player.nome << " VENCEU!" << endl;
-				system ("pause");
-				DropItem (player, item, inventario);
-				return player.vida;
-				LutaAcabou = true;
 			}
 			if (player.vida <= 0){
-				cout << player.nome << " morreu... talvez em uma outra vida..." << endl;
-				system ("pause");
+				cout << player.nome << " desapontou aqueles que te aguardavam!";
 				LutaAcabou = true;
 				return 0;
 			}
+			else if (mob.vida <= 0){
+				cout << "parabens voce VENCEU!!!";
+				getchar();
+				LutaAcabou = true;
+			}
 			break;
-case 2:
-    if (player.qntI == 0) {
-        cout << "Inventário VAZIO!\n\n";
-    } else {
-        for (i = 0; i < player.qntI; i++) {
-            cout << i + 1 << "- " << inventario[i].nome << "\n";
-        }
-        cin >> escolhaI;
-        escolhaI--;
-        if (escolhaI >= 0 && escolhaI < player.qntI) {
-            int codigoItem = inventario[escolhaI].codigo;
-            SomaItem(player, item[codigoItem]); 
-            for (i = escolhaI; i < player.qntI - 1; i++) {
-                inventario[i] = inventario[i + 1];
-            }
-            player.qntI--;
+		case 2:
+			if (player.qntI <= 1) {
+				cout << "Inventario VAZIO!!!\n";
+			} else {
+				cout << "Escolha um item para usar:\n";
+				for (i = 1; i < player.qntI; i++) {
+					cout << i << ": " << inventario.item[i].nome << endl;
+				}
+				cin >> escolhaI;
 
-            dadoP = rand() % 10;
-            dadoM = rand() % 15;
-            if (dadoM > dadoP) {
-                player.vida -= mob.forca;
-                if (player.vida <= 0) {
-                    cout << player.nome << " morreu... talvez em uma outra vida..." << endl;
-                    system("pause");
-                    LutaAcabou = true;
-                    return 0;
-                }
-            }
-        } else {
-            cout << "Item INVALIDO!\n\n";
-        }
-    }
-    break;
+				if (escolhaI > 0 && escolhaI < player.qntI) {
+					int codigoItem = inventario.item[escolhaI].codigo;
+					player = SomaItem(player, item[codigoItem]);
 
-		
-		default:
-			break;
+					cout << "Voce usou " << inventario.item[escolhaI].nome << "agora tem " << player.vida << " de vida!!!\n";
+					for (int j = escolhaI; j < player.qntI - 1; j++) {
+						inventario.item[j] = inventario.item[j + 1];
+					}
+					inventario.item[player.qntI - 1] = {"", 0, 0};
+					player.qntI--;
+				} else {
+					cout << "Item INVALIDO!\n";
+				}
+			}
 		}
-	}
-	
+	}	
 }
 
 int main() {
 	Player player;
-	Inventario inventario[10];
-	player.qntI = 0; // Inicializa player.qntI
+	Inventario inventario;
+	player.qntI = 1; // Inicializa player.qntI
 	player.stamina = 1; // esse valor pode mudar!
 
 	int classe, raca;
@@ -223,8 +209,8 @@ int main() {
 	item[2] = {"Pocao de Cura Grande", 18, 2};
 	// ESPADAS
 	item[3] = {"Espada Sem fio", 3, 3};
-	item[4] = {"Espada", 9, 4};
-	item[5] = {"Espada BOA", 18, 5};
+	item[4] = {"Espada", 6, 4};
+	item[5] = {"Espada BOA", 9, 5};
 	//ESCUDOS
 	item[6] = {"Escudo Desgastado", 3, 6};
 	item[7] = {"Escudo", 9, 7};
@@ -235,7 +221,14 @@ int main() {
 	item[11] = {"Capa Revestida", 18, 11};
 	//MACHADO
 	item[12] = {"Machado Desgastado", 4, 12};
-	item[13] = {"Machado", 4, 13};
+	item[13] = {"Machado", 8, 13};
+	//ARCOS
+	item[14] = {"Arco Desgastado", 3, 14};
+	item[15] = {"Arco", 9, 15};
+	//CAJADO
+	item[16] = {"Cajado Rachado", 3, 16};
+	item[17] = {"Cajado de Madeira", 6, 17};
+	item[18] = {"Cajado Pau-Brasil", 9, 18};
 
 	srand(time(0));
 	player.xp = 0;
@@ -285,26 +278,29 @@ int main() {
 		case 1:
 			player.classe = "Mago";
 			player.vida = 10;
-			player.forca = (rand() % 11) + 1;
+			player.forca = (rand() % 6) + 1;
 			player.inteligencia = (rand() % 11) + 1;
 			player.carisma = (rand() % 11) + 1;
 			player.destreza = (rand() % 11) + 1;
+			inventario.item[0] = item[16];
 		break;		
 		case 2:
 			player.classe = "Guerreiro";
 			player.vida = 10;
-			player.forca = (rand() % 11) + 1;
+			player.forca = (rand() % 6) + 1;
 			player.inteligencia = (rand() % 11) + 1;
 			player.carisma = (rand() % 11) + 1;
 			player.destreza = (rand() % 11) + 1;
+			inventario.item[0] = item[3];
 		break;		
 		case 3:
 			player.classe = "Arqueiro";
 			player.vida = 10;
-			player.forca = (rand() % 11) + 1;
+			player.forca = (rand() % 6) + 1;
 			player.inteligencia = (rand() % 11) + 1;
 			player.carisma = (rand() % 11) + 1;
 			player.destreza = (rand() % 11) + 1;
+			inventario.item[0] = item[14];
 		break;
 	}
 
@@ -318,11 +314,9 @@ int main() {
 
 	Mob mob;
 	mob.vida = 5;
-	mob.forca = 1;
+	mob.forca = 100;
 	mob.nome = "Teste";
-	DropItem(player, item, inventario);
-
-	player.vida = Luta(player, inventario, item, mob);
+	Luta(player, inventario, item, mob);
 
 	system ("cls");
 	cout << "Vida: " << player.vida << endl;
